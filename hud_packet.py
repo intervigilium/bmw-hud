@@ -31,6 +31,7 @@ def send_msg():
     s.connect(hud)
     s.sendall(raw_msg)
     data = s.recv(1024)
+    print("received {}".format(data))
 
 
 def main():
