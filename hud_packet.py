@@ -28,9 +28,16 @@ def send_msg():
     raw_msg = bytearray(msg)
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    print("connecting to HUD")
     s.connect(hud)
+
+    print("sending message")
     s.sendall(raw_msg)
+
+    print("receiving response")
     data = s.recv(1024)
+
     print("received {}".format(data))
 
 
