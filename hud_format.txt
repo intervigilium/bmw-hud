@@ -3,27 +3,27 @@
 replay_msg1
 byte 00: 0x7a header byte?
 byte 01: 0x02 header byte?
-byte 02: 0x00 ?
-byte 03: 0x00 ?
-byte 04: 0x00 ?
-byte 05: 0x00 ?
+byte 02: 0x00 min 0, max 100, not visible
+byte 03: 0x00 min 0, max 100, 0 sets speed limit to mph, 1 sets speed limit to km/h
+byte 04: 0x00 0 speed cam off, 1 speed cam on, 2 speed limit off
+byte 05: 0x00 min 0, max 100, not visible
 byte 06: speed limit 0x23 = 35 MPH
-byte 07: 0x80 yards until turn ?
-byte 08: 0x00 ?
-byte 09: 0x00 ?
-byte 10: 0x00 ?
-byte 11: 0x05 right arrow ?
-byte 12: 0x03 lane count ?
-byte 13: 0x01 lane index ?
-byte 14: 0x00 ?
+byte 07: 0x80 yards until turn
+byte 08: 0x00 min 0, max 100, yards to turn
+byte 09: 0x00 min 0, max 100, miles to turn
+byte 10: 0x00 min 0, max 100, unsets dist to turn
+byte 11: 0x05 right arrow
+byte 12: 0x03 lane count
+byte 13: 0x01 lane index
+byte 14: 0x00 min 0, max 100, 1 unsets lane index
 byte 15: 0x09 time of arrival hours
 byte 16: 0x24 time of arrival minutes
 byte 17: 0x01 time of arrival AM/PM 0x01 = PM
-byte 18: 0xa5 not visible somehow remaining dist is encoded here
-byte 19: 0x35 not visible somehow remaining dist is encoded here
-byte 20: 0x00 ?
-byte 21: 0x00 ?
-byte 22: 0x00 ?
+byte 18: 0xa5 remaining dist, yd
+byte 19: 0x35 remaining dist, yd
+byte 20: 0x00 remaining dist, mi
+byte 21: 0x00 min 0, max 100, unsets remaining dist
+byte 22: 0x00 min 0, max 99, traffic delay minutes
 byte 23: 0x01 unknown field, not part of data
 byte 24: 0xb5 checksum, sum(msg[2-22]) - 0xff
 byte 25: 0x01 unknown field, not part of data
@@ -40,7 +40,7 @@ byte 07: 0x00 yards until turn?
 byte 08:
 byte 09:
 byte 10:
-byte 11: 0x08 left arrow ?
+byte 11: 0x08 left arrow
 byte 12: 0x01 lane count ?
 byte 13: 0x01 lane index ?
 byte 14:
@@ -56,4 +56,113 @@ byte 23: 0x01 unknown field, not part of data
 byte 24: 0x4e checksum, sum(msg[2-22]) - 0xff
 byte 25: 0x01 unknown field, not part of data
 
-There is a checksum
+arrows:
+0 => no turn indicator
+1 => straight
+2 => offramp left ahead
+3 => offramp right ahead
+4 => 45 deg right
+5 => 90 deg right
+6 => 135 right
+7 => 45 deg left
+8 => 90 deg left
+9 => 135 left
+10 => U right
+11 => U left
+12 => roundabout straight right
+13 => roundabout 45 right
+14 => roundabout 90 right
+15 => roundabout 135 right
+16 => roundabout -45 right
+17 => roundabout -90 right
+18 => roundabout -135 right
+19 => roundabout -180 right
+20 => roundabout straight left
+21 => roundabout -45 left
+22 => roundabout -90 left
+23 => roundabout -135 left
+24 => roundabout 135 left
+25 => roundabout 90 left
+26 => roundabout 45 left
+27 => roundabout -180 left
+28 => fork 45 right
+29 => fork 45 left
+30+ => no turn indicator
+
+lane count
+max is 8
+
+lane index is binary
+0 => none
+1 => right most
+2 => second from right
+3 => right + second from right
+4 => 3rd from right
+
+arrival hours/minutes
+values go 00-99
+
+arrival AM/PM
+0 => AM
+1 => PM
+2 => hours
+3 => blank
+4+ => nothing
+
+dist_to_turn
+only shows when turn indicator active
+only 250 seems to work
+
+dist_remaining_0
+10 => 10yd
+13 => 10yd
+14 => 20yd
+15 => 20yd
+22 => 20yd
+23 => 30yd
+30 => 30yd
+40 => 40yd
+50 => 50yd
+55 => 60yd
+59 => 60yd
+60 => 70yd (things get wacky here)
+70 => 80yd
+80 => 90yd
+90 => 100yd
+100 => 100yd
+150 => 150yd
+200 => 200yd
+205 => 200yd
+206 => 250yd
+210 => 250yd
+220 => 250yd
+230 => 250yd
+231 => 250yd, also max value
+
+dist_remaining_1
+1 => 300yd
+2 => 600yd
+3 => 800yd
+4 => 1100yd
+5 => 1400yd
+6 => 1700yd
+7 => 2000yd
+8 => 2200yd
+9 => 2500yd
+10 => 2800yd
+11 => 3100yd
+15 => 4200yd
+20 => 5600yd
+25 => 7000yd
+30 => 8400yd
+31 => 8700yd
+35 => 6mi
+50 => 8mi
+60 => 10mi
+100 => 16mi
+200 => 32mi
+220 => 35mi
+230 => 37mi
+231 => 37mi, also max value
+
+There is a checksum: (sum(msg[2:23]) - 0xff) & 0xff
