@@ -1,48 +1,48 @@
 26 bytes
 
 replay_msg1
-byte 00: 0x7a ??
-byte 01: 0x02 ??
-byte 02:
-byte 03:
-byte 04:
-byte 05:
+byte 00: 0x7a ?
+byte 01: 0x02 ?
+byte 02: 0x00 ?
+byte 03: 0x00 ?
+byte 04: 0x00 ?
+byte 05: 0x00 ?
 byte 06: speed limit 0x23 = 35 MPH
-byte 07: 0x80 not visible ?
-byte 08:
-byte 09:
-byte 10:
-byte 11: 0x05 ??
-byte 12: 0x03 ??
-byte 13: 0x01 ??
-byte 14:
-byte 15: time of arrival hours 0x09 = 9
-byte 16: time of arrival minutes 0x24 = 36
-byte 17: time of arrival AM/PM 0x01 = PM
-byte 18: 0xa5 not visible ?
-byte 19: 0x35 not visible ?
-byte 20:
-byte 21:
-byte 22:
-byte 23: 0x01 ??
+byte 07: 0x80 yards until turn ?
+byte 08: 0x00 ?
+byte 09: 0x00 ?
+byte 10: 0x00 ?
+byte 11: 0x05 right arrow ?
+byte 12: 0x03 lane count ?
+byte 13: 0x01 lane index ?
+byte 14: 0x00 ?
+byte 15: 0x09 time of arrival hours
+byte 16: 0x24 time of arrival minutes
+byte 17: 0x01 time of arrival AM/PM 0x01 = PM
+byte 18: 0xa5 not visible somehow remaining dist is encoded here
+byte 19: 0x35 not visible somehow remaining dist is encoded here
+byte 20: 0x00 ?
+byte 21: 0x00 ?
+byte 22: 0x00 ?
+byte 23: 0x01 ?
 byte 24: 0xb5 checksum?
-byte 25: 0x01 ??
+byte 25: 0x01 ?
 
 replay_msg3
-byte 00: 0x7a ??
-byte 01: 0x02 ??
+byte 00: 0x7a ?
+byte 01: 0x02 ?
 byte 02:
 byte 03:
 byte 04:
 byte 05:
 byte 06: speed limit 0x23 = 35 MPH
-byte 07: 0x00 not visible ?
+byte 07: 0x00 yards until turn?
 byte 08:
 byte 09:
 byte 10:
-byte 11: 0x08 ??
-byte 12: 0x01 ??
-byte 13: 0x01 ??
+byte 11: 0x08 left arrow ?
+byte 12: 0x01 lane count ?
+byte 13: 0x01 lane index ?
 byte 14:
 byte 15: time of arrival hours 0x09 = 9
 byte 16: time of arrival minutes 0x22 = 34
@@ -53,7 +53,7 @@ byte 20:
 byte 21:
 byte 22:
 byte 23: 0x01 ??
-byte 24: 0xb5 checksum?
+byte 24: 0x4e checksum?
 byte 25: 0x01 ??
 
 There is a checksum
