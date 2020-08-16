@@ -188,15 +188,15 @@ def generate_msg(args):
     return msg
 
 
-def send_msg(args):
+def send_msg(msg):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     print("connecting to HUD")
     s.connect(HUD)
 
-    msg = bytearray(MESSAGES[args.msg])
-    print("sending message: {}".format(msg))
-    s.sendall(msg)
+    raw_msg = bytearray(msg)
+    print("sending message: {}".format(raw_msg))
+    s.sendall(raw_msg)
 
     print("receiving response")
     data = s.recv(1024)
@@ -253,7 +253,7 @@ def main():
     if args.checksum:
         verify_checksum(args)
     elif args.msg is not None:
-        send_msg(args)
+        send_msg(MESSAGES[args.msg])
     else:
         generate_msg(args)
 
