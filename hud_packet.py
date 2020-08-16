@@ -6,6 +6,20 @@ import socket
 
 HUD = ("192.168.10.1", 50007)
 
+DATA_BEGIN_OFFSET = 0x2
+SPEED_LIMIT_OFFSET = 0x06
+DIST_TO_TURN_OFFSET = 0x07
+ARROW_OFFSET = 0x0b
+LANE_COUNT_OFFSET = 0x0c
+LANE_INDEX_OFFSET = 0x0d
+ARRIVAL_TIME_HOURS_OFFSET = 0x0f
+ARRIVAL_TIME_MINUTES_OFFSET = 0x10
+ARRIVAL_TIME_AMPM_OFFSET = 0x11
+REMAINING_DIST_0_OFFSET = 0x12
+REMAINING_DIST_1_OFFSET = 0x13
+DATA_END_OFFSET = 0x17
+CHECKSUM_OFFSET = 0x18
+
 HELLO_MSG = [
     0x7a, 0x01, 0x01, 0x15,
     0x13, 0x01,
@@ -116,7 +130,7 @@ def verify_checksum(args):
 
     msg = MESSAGES[args.msg]
 
-    bmw_checksum = calculate_checksum(msg[2:23])
+    bmw_checksum = calculate_checksum(msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
 
     print("bmw checksum: {}".format(hex(bmw_checksum)))
 
