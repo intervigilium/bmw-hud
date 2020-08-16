@@ -97,16 +97,26 @@ MESSAGES = [
 ]
 
 
-def calculate_checksum(args):
+def calculate_checksum(msg_data):
+    if len(msg_data) != 21:
+        raise Exception("calculate_checksum: Invalid data length {}"
+                        .format(len(msg_data)))
+
+    checksum = 0
+    for i in msg_data:
+        checksum += i
+    checksum -= 0xff
+    checksum &= 0xff
+
+    return checksum
+
+
+def verify_checksum(args):
     print("calculating message checksums")
 
     msg = MESSAGES[args.msg]
 
-    bmw_checksum = 0
-    for i in range(2, 23):
-        bmw_checksum += msg[i]
-    bmw_checksum -= 0xff
-    bmw_checksum &= 0xff
+    bmw_checksum = calculate_checksum(msg[2:23])
 
     print("bmw checksum: {}".format(hex(bmw_checksum)))
 
@@ -128,7 +138,7 @@ def generate_msg(args):
 
     raw_msg = bytearray(msg)
 
-    print("generated message: {}".format(raw_msg)
+    print("generated message: {}".format(raw_msg))
 
     return msg
 
@@ -166,7 +176,7 @@ def parse_args():
 def main():
     args = parse_args()
     if args.checksum:
-        calculate_checksum(args)
+        verify_checksum(args)
     else:
         send_msg(args)
 
