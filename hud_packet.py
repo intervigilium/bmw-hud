@@ -100,6 +100,18 @@ MESSAGES = [
 def calculate_checksum(args):
     print("calculating message checksums")
 
+    msg = MESSAGES[args.msg]
+
+    bmw_checksum = 0
+    for i in range(2, 23):
+        bmw_checksum += msg[i]
+    bmw_checksum -= 0xff
+    bmw_checksum &= 0xff
+
+    print("bmw checksum: {}".format(hex(bmw_checksum)))
+
+    print("message[25]: {}".format(hex(msg[24])))
+
 
 def send_msg(args):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

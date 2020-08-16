@@ -1,8 +1,8 @@
 26 bytes
 
 replay_msg1
-byte 00: 0x7a ?
-byte 01: 0x02 ?
+byte 00: 0x7a header byte?
+byte 01: 0x02 header byte?
 byte 02: 0x00 ?
 byte 03: 0x00 ?
 byte 04: 0x00 ?
@@ -24,13 +24,13 @@ byte 19: 0x35 not visible somehow remaining dist is encoded here
 byte 20: 0x00 ?
 byte 21: 0x00 ?
 byte 22: 0x00 ?
-byte 23: 0x01 ?
-byte 24: 0xb5 checksum?
-byte 25: 0x01 ?
+byte 23: 0x01 unknown field, not part of data
+byte 24: 0xb5 checksum, sum(msg[2-22]) - 0xff
+byte 25: 0x01 unknown field, not part of data
 
 replay_msg3
-byte 00: 0x7a ?
-byte 01: 0x02 ?
+byte 00: 0x7a header byte?
+byte 01: 0x02 header byte?
 byte 02:
 byte 03:
 byte 04:
@@ -52,8 +52,8 @@ byte 19: 0x31 not visible ?
 byte 20:
 byte 21:
 byte 22:
-byte 23: 0x01 ??
-byte 24: 0x4e checksum?
-byte 25: 0x01 ??
+byte 23: 0x01 unknown field, not part of data
+byte 24: 0x4e checksum, sum(msg[2-22]) - 0xff
+byte 25: 0x01 unknown field, not part of data
 
 There is a checksum
