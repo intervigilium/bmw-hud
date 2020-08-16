@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
+import argparse
 import socket
 
 
-def send_msg():
+def send_msg(args):
     hud = ("192.168.10.1", 50007)
 
     hello_msg = [
@@ -65,15 +66,23 @@ def send_msg():
         0x00, 0x00, 0x00, 0x01,
         0xb5, 0x01
     ]
-    raw_msg = bytearray(replay_msg3)
+
+    messages = [
+        empty_msg,
+        replay_msg1,
+        replay_msg2,
+        replay_msg3,
+        test_msg,
+    ]
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     print("connecting to HUD")
     s.connect(hud)
 
-    print("sending message")
-    s.sendall(raw_msg)
+    msg = bytearray(messages[args.msg])
+    print("sending message: {}".format(msg))
+    s.sendall(msg)
 
     print("receiving response")
     data = s.recv(1024)
@@ -81,8 +90,16 @@ def send_msg():
     print("received {}".format(data))
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Send packets to BMW HUD.')
+    parser.add_argument("--msg", type=int, required=True, help="message index to replay")
+
+    return parser.parse_args()
+
+
 def main():
-    send_msg()
+    args = parse_args()
+    send_msg(args)
 
 
 if __name__ == "__main__":
