@@ -254,8 +254,10 @@ def main():
     args = parse_args()
     if args.checksum:
         verify_checksum(args)
-    else:
+    elif args.msg is not None:
         send_msg(args)
+    else:
+        generate_msg(args)
 
 
 if __name__ == "__main__":
