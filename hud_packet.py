@@ -259,7 +259,8 @@ def main():
     elif args.msg is not None:
         send_msg(MESSAGES[args.msg])
     else:
-        generate_msg(args)
+        msg = generate_msg(args)
+        send_msg(msg)
 
 
 if __name__ == "__main__":
