@@ -7,16 +7,27 @@ import socket
 HUD = ("192.168.10.1", 50007)
 
 DATA_BEGIN_OFFSET = 0x2
+UNK_OFFSET_2 = 0x02
+SPEED_LIMIT_METRIC_OFFSET = 0x03
+SPEED_CAMERA_OFFSET = 0x04
+UNK_OFFSET_5 = 0x05
 SPEED_LIMIT_OFFSET = 0x06
-DIST_TO_TURN_OFFSET = 0x07
+DIST_TO_TURN_0_OFFSET = 0x07
+DIST_TO_TURN_1_OFFSET = 0x08
+DIST_TO_TURN_2_OFFSET = 0x09
+DIST_TO_TURN_DISABLE_OFFSET = 0x0a
 ARROW_OFFSET = 0x0b
 LANE_COUNT_OFFSET = 0x0c
 LANE_INDEX_OFFSET = 0x0d
+LANE_INDEX_DISABLE_OFFSET = 0x0e
 ARRIVAL_TIME_HOURS_OFFSET = 0x0f
 ARRIVAL_TIME_MINUTES_OFFSET = 0x10
 ARRIVAL_TIME_AMPM_OFFSET = 0x11
 REMAINING_DIST_0_OFFSET = 0x12
 REMAINING_DIST_1_OFFSET = 0x13
+REMAINING_DIST_2_OFFSET = 0x14
+REMAINING_DIST_DISABLE_OFFSET = 0x15
+TRAFFIC_DELAY_OFFSET = 0x16
 DATA_END_OFFSET = 0x17
 CHECKSUM_OFFSET = 0x18
 
@@ -154,11 +165,32 @@ def generate_msg(args):
         0x00, 0x01,
     ]
 
+    if args.offset_2 is not None:
+        msg[UNK_OFFSET_2] = args.offset_2
+
+    if args.speed_limit_metric is not None:
+        msg[SPEED_LIMIT_METRIC_OFFSET] = args.speed_limit_metric
+
+    if args.speed_camera is not None:
+        msg[SPEED_CAMERA_OFFSET] = args.speed_camera
+
+    if args.offset_5 is not None:
+        msg[UNK_OFFSET_5] = args.offset_5
+
     if args.speed_limit is not None:
         msg[SPEED_LIMIT_OFFSET] = args.speed_limit
 
-    if args.dist_to_turn is not None:
-        msg[DIST_TO_TURN_OFFSET] = args.dist_to_turn
+    if args.dist_to_turn_0 is not None:
+        msg[DIST_TO_TURN_0_OFFSET] = args.dist_to_turn_0
+
+    if args.offset_8 is not None:
+        msg[DIST_TO_TURN_1_OFFSET] = args.offset_8
+
+    if args.offset_9 is not None:
+        msg[DIST_TO_TURN_2_OFFSET] = args.offset_9
+
+    if args.dist_to_turn_disable is not None:
+        msg[DIST_TO_TURN_DISABLE_OFFSET] = args.dist_to_turn_disable
 
     if args.arrow is not None:
         msg[ARROW_OFFSET] = args.arrow
@@ -168,6 +200,9 @@ def generate_msg(args):
 
     if args.lane_index is not None:
         msg[LANE_INDEX_OFFSET] = args.lane_index
+
+    if args.lane_index_disable is not None:
+        msg[LANE_INDEX_DISABLE_OFFSET] = args.lane_index_disable
 
     if args.arrival_hours is not None:
         msg[ARRIVAL_TIME_HOURS_OFFSET] = args.arrival_hours
@@ -183,6 +218,15 @@ def generate_msg(args):
 
     if args.remaining_dist_1 is not None:
         msg[REMAINING_DIST_1_OFFSET] = args.remaining_dist_1
+
+    if args.remaining_dist_2 is not None:
+        msg[REMAINING_DIST_2_OFFSET] = args.remaining_dist_2
+
+    if args.remaining_dist_disable is not None:
+        msg[REMAINING_DIST_DISABLE_OFFSET] = args.remaining_dist_disable
+
+    if args.traffic_delay is not None:
+        msg[TRAFFIC_DELAY_OFFSET] = args.traffic_delay
 
     msg[CHECKSUM_OFFSET] = calculate_checksum(
             msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
@@ -218,21 +262,50 @@ def parse_args():
                         action="store_true",
                         help="calculate checksums of messages")
 
+    parser.add_argument("--offset_2",
+                        type=int,
+                        help="unknown offset 2")
+
+    parser.add_argument("--speed_limit_metric",
+                        type=int,
+                        help="speed limit is metric, 0 for mph, 1 for kmh")
+    parser.add_argument("--speed_camera",
+                        type=int,
+                        help="enable speed camera icon")
+    parser.add_argument("--offset_5",
+                        type=int,
+                        help="unknown offset 5")
     parser.add_argument("--speed_limit",
                         type=int,
                         help="set speed limit")
-    parser.add_argument("--dist_to_turn",
+
+    parser.add_argument("--dist_to_turn_0",
                         type=int,
-                        help="distance until next turn")
+                        help="distance until next turn (1/3)")
+    parser.add_argument("--dist_to_turn_1",
+                        type=int,
+                        help="distance until next turn (2/3)")
+    parser.add_argument("--dist_to_turn_2",
+                        type=int,
+                        help="distance until next turn (3/3)")
+    parser.add_argument("--dist_to_turn_disable",
+                        type=int,
+                        help="disable distance to turn indicator")
+
     parser.add_argument("--arrow",
                         type=int,
                         help="direction arrow 5: left 8: left")
+
     parser.add_argument("--lane_count",
                         type=int,
                         help="number of lanes")
     parser.add_argument("--lane_index",
                         type=int,
                         help="lane indicator index")
+    parser.add_argument("--lane_index_disable",
+                        type=int,
+                        help="disable lane index indicator")
+
     parser.add_argument("--arrival_hours",
                         type=int,
                         help="arrival time hours")
@@ -242,12 +315,23 @@ def parse_args():
     parser.add_argument("--arrival_ampm",
                         type=int,
                         help="arrival time AM (0) PM (1)")
+
     parser.add_argument("--remaining_dist_0",
                         type=int,
-                        help="remaining distance 1/2")
+                        help="remaining distance 1/3")
     parser.add_argument("--remaining_dist_1",
                         type=int,
-                        help="remaining distance 2/2")
+                        help="remaining distance 2/3")
+    parser.add_argument("--remaining_dist_2",
+                        type=int,
+                        help="remaining distance 3/3")
+    parser.add_argument("--remaining_dist_disable",
+                        type=int,
+                        help="disable remaining distance indicator")
+
+    parser.add_argument("--traffic_delay",
+                        type=int,
+                        help="minutes delay due to traffic")
 
     return parser.parse_args()
 
