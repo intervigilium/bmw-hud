@@ -89,6 +89,7 @@ def send_msg(args):
     data = s.recv(1024)
 
     print("received {}".format(data))
+    # TODO: Check against server ACK message
 
 
 def parse_args():
