@@ -183,9 +183,7 @@ def generate_msg(args):
     msg[CHECKSUM_OFFSET] = calculate_checksum(
             msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
 
-    raw_msg = bytearray(msg)
-
-    print("generated message: {}".format(raw_msg))
+    print("generated message: {}".format(", ".join([hex(i) for i in msg])))
 
     return msg
 
