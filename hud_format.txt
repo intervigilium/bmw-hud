@@ -1,13 +1,14 @@
+message format:
+
 26 bytes
 
-replay_msg1
 byte 00: 0x7a header byte?
 byte 01: 0x02 header byte?
 byte 02: 0x00 min 0, max 100, not visible
 byte 03: 0x00 min 0, max 100, 0 sets speed limit to mph, 1 sets speed limit to km/h
 byte 04: 0x00 0 speed cam off, 1 speed cam on, 2 speed limit off
 byte 05: 0x00 min 0, max 100, not visible
-byte 06: speed limit 0x23 = 35 MPH
+byte 06: 0x23 speed limit 35 MPH
 byte 07: 0x80 yards until turn
 byte 08: 0x00 min 0, max 100, yards to turn
 byte 09: 0x00 min 0, max 100, miles to turn
@@ -26,34 +27,6 @@ byte 21: 0x00 min 0, max 100, unsets remaining dist
 byte 22: 0x00 min 0, max 99, traffic delay minutes
 byte 23: 0x01 unknown field, not part of data
 byte 24: 0xb5 checksum, sum(msg[2-22]) - 0xff
-byte 25: 0x01 unknown field, not part of data
-
-replay_msg3
-byte 00: 0x7a header byte?
-byte 01: 0x02 header byte?
-byte 02:
-byte 03:
-byte 04:
-byte 05:
-byte 06: speed limit 0x23 = 35 MPH
-byte 07: 0x00 yards until turn?
-byte 08:
-byte 09:
-byte 10:
-byte 11: 0x08 left arrow
-byte 12: 0x01 lane count ?
-byte 13: 0x01 lane index ?
-byte 14:
-byte 15: time of arrival hours 0x09 = 9
-byte 16: time of arrival minutes 0x22 = 34
-byte 17: time of arrival AM/PM 0x01 = PM
-byte 18: 0xc3 not visible ?
-byte 19: 0x31 not visible ?
-byte 20:
-byte 21:
-byte 22:
-byte 23: 0x01 unknown field, not part of data
-byte 24: 0x4e checksum, sum(msg[2-22]) - 0xff
 byte 25: 0x01 unknown field, not part of data
 
 arrows:
@@ -90,7 +63,7 @@ arrows:
 30+ => no turn indicator
 
 lane count
-max is 8
+max is 8, but only 6 lanes can be drawn
 
 lane index is binary
 0 => none
@@ -98,6 +71,8 @@ lane index is binary
 2 => second from right
 3 => right + second from right
 4 => 3rd from right
+5 => right most + 3rd from right
+...etc
 
 arrival hours/minutes
 values go 00-99
@@ -109,9 +84,16 @@ arrival AM/PM
 3 => blank
 4+ => nothing
 
-dist_to_turn
+dist_to_turn_0
 only shows when turn indicator active
-only 250 seems to work
+shows yards
+anything but 250 appears invalid
+
+dist_to_turn_1
+0-100, shows yards
+
+dist_to_turn_2
+0-100, shows miles
 
 dist_remaining_0
 10 => 10yd
@@ -164,5 +146,9 @@ dist_remaining_1
 220 => 35mi
 230 => 37mi
 231 => 37mi, also max value
+
+dist_remaining_2
+shows miles
+0-100
 
 There is a checksum: (sum(msg[2:23]) - 0xff) & 0xff
