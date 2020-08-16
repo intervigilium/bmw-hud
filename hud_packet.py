@@ -164,7 +164,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Send packets to BMW HUD.')
     parser.add_argument("--msg",
                         type=int,
-                        required=True,
                         help="message index to replay")
     parser.add_argument("--checksum",
                         action="store_true",
