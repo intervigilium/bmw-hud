@@ -93,7 +93,10 @@ def send_msg(args):
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Send packets to BMW HUD.')
-    parser.add_argument("--msg", type=int, required=True, help="message index to replay")
+    parser.add_argument("--msg",
+                        type=int,
+                        required=True,
+                        help="message index to replay")
 
     return parser.parse_args()
 
