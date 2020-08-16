@@ -113,6 +113,26 @@ def calculate_checksum(args):
     print("message[25]: {}".format(hex(msg[24])))
 
 
+def generate_msg(args):
+    print("generating message")
+
+    msg = [
+        0x7a, 0x02, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x01,
+        0x00, 0x01,
+    ]
+
+    raw_msg = bytearray(msg)
+
+    print("generated message: {}".format(raw_msg)
+
+    return msg
+
+
 def send_msg(args):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
