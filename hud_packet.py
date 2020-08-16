@@ -111,6 +111,10 @@ MESSAGES = [
 ]
 
 
+def msg_to_string(msg):
+    return ", ".join([hex(i) for i in msg])
+
+
 def calculate_checksum(msg_data):
     if len(msg_data) != 21:
         raise Exception("calculate_checksum: Invalid data length {}"
@@ -183,7 +187,7 @@ def generate_msg(args):
     msg[CHECKSUM_OFFSET] = calculate_checksum(
             msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
 
-    print("generated message: {}".format(", ".join([hex(i) for i in msg])))
+    print("generated message: {}".format(msg_to_string(msg)))
 
     return msg
 
