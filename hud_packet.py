@@ -97,6 +97,10 @@ MESSAGES = [
 ]
 
 
+def calculate_checksum(args):
+    print("calculating message checksums")
+
+
 def send_msg(args):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -120,13 +124,19 @@ def parse_args():
                         type=int,
                         required=True,
                         help="message index to replay")
+    parser.add_argument("--checksum",
+                        action="store_true",
+                        help="calculate checksums of messages")
 
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    send_msg(args)
+    if args.checksum:
+        calculate_checksum(args)
+    else:
+        send_msg(args)
 
 
 if __name__ == "__main__":
