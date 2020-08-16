@@ -199,7 +199,7 @@ def send_msg(msg):
     s.connect(HUD)
 
     raw_msg = bytearray(msg)
-    print("sending message: {}".format(raw_msg))
+    print("sending message: {}".format(msg_to_string(msg)))
     s.sendall(raw_msg)
 
     print("receiving response")
