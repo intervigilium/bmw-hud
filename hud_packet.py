@@ -183,6 +183,37 @@ def parse_args():
                         action="store_true",
                         help="calculate checksums of messages")
 
+    parser.add_argument("--speed_limit",
+                        type=int,
+                        help="set speed limit")
+    parser.add_argument("--dist_to_turn",
+                        type=int,
+                        help="distance until next turn")
+    parser.add_argument("--arrow",
+                        type=int,
+                        help="direction arrow 5: left 8: left")
+    parser.add_argument("--lane_count",
+                        type=int,
+                        help="number of lanes")
+    parser.add_argument("--lane_index",
+                        type=int,
+                        help="lane indicator index")
+    parser.add_argument("--arrival_hours",
+                        type=int,
+                        help="arrival time hours")
+    parser.add_argument("--arrival_minutes",
+                        type=int,
+                        help="arrival time minutes")
+    parser.add_argument("--arrival_ampm",
+                        type=int,
+                        help="arrival time AM (0) PM (1)")
+    parser.add_argument("--remaining_dist_0",
+                        type=int,
+                        help="remaining distance 1/2")
+    parser.add_argument("--remaining_dist_1",
+                        type=int,
+                        help="remaining distance 2/2")
+
     return parser.parse_args()
 
 
