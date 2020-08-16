@@ -150,6 +150,39 @@ def generate_msg(args):
         0x00, 0x01,
     ]
 
+    if args.speed_limit is not None:
+        msg[SPEED_LIMIT_OFFSET] = args.speed_limit
+
+    if args.dist_to_turn is not None:
+        msg[DIST_TO_TURN_OFFSET] = args.dist_to_turn
+
+    if args.arrow is not None:
+        msg[ARROW_OFFSET] = args.arrow
+
+    if args.lane_count is not None:
+        msg[LANE_COUNT_OFFSET] = args.lane_count
+
+    if args.lane_index is not None:
+        msg[LANE_INDEX_OFFSET] = args.lane_index
+
+    if args.arrival_hours is not None:
+        msg[ARRIVAL_TIME_HOURS_OFFSET] = args.arrival_hours
+
+    if args.arrival_minutes is not None:
+        msg[ARRIVAL_TIME_MINUTES_OFFSET] = args.arrival_minutes
+
+    if args.arrival_ampm is not None:
+        msg[ARRIVAL_TIME_AMPM_OFFSET] = args.arrival_ampm
+
+    if args.remaining_dist_0 is not None:
+        msg[REMAINING_DIST_0_OFFSET] = args.remaining_dist_0
+
+    if args.remaining_dist_1 is not None:
+        msg[REMAINING_DIST_1_OFFSET] = args.remaining_dist_1
+
+    msg[CHECKSUM_OFFSET] = calculate_checksum(
+            msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
+
     raw_msg = bytearray(msg)
 
     print("generated message: {}".format(raw_msg))
