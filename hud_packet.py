@@ -183,11 +183,11 @@ def generate_msg(args):
     if args.dist_to_turn_0 is not None:
         msg[DIST_TO_TURN_0_OFFSET] = args.dist_to_turn_0
 
-    if args.offset_8 is not None:
-        msg[DIST_TO_TURN_1_OFFSET] = args.offset_8
+    if args.dist_to_turn_1 is not None:
+        msg[DIST_TO_TURN_1_OFFSET] = args.dist_to_turn_1
 
-    if args.offset_9 is not None:
-        msg[DIST_TO_TURN_2_OFFSET] = args.offset_9
+    if args.dist_to_turn_2 is not None:
+        msg[DIST_TO_TURN_2_OFFSET] = args.dist_to_turn_2
 
     if args.dist_to_turn_disable is not None:
         msg[DIST_TO_TURN_DISABLE_OFFSET] = args.dist_to_turn_disable
