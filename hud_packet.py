@@ -30,6 +30,7 @@ REMAINING_DIST_DISABLE_OFFSET = 0x15
 TRAFFIC_DELAY_OFFSET = 0x16
 DATA_END_OFFSET = 0x17
 CHECKSUM_OFFSET = 0x18
+CHECKSUM_OVERFLOW_OFFSET = 0x19
 
 HELLO_MSG = [
     0x7a, 0x01, 0x01, 0x15,
@@ -111,6 +112,26 @@ TEST_MSG = [
     0xb5, 0x01,
 ]
 
+CHECKSUM_OVERFLOW_TEST_MSG = [
+    0x7a, 0x2, 0x0, 0x0,
+    0x0, 0x0, 0x41, 0x0,
+    0x0, 0xe1, 0x0, 0x5,
+    0x6, 0x7, 0x0, 0x0,
+    0x1, 0x2, 0x64, 0x64,
+    0x0, 0x0, 0x0, 0x1,
+    0x0, 0x2
+]
+
+CHECKSUM_UNDERFLOW_TEST_MSG = [
+    0x7a, 0x2, 0x0, 0x0,
+    0x0, 0x0, 0x41, 0x0,
+    0x1, 0x0, 0x0, 0x5,
+    0x6, 0x7, 0x0, 0x0,
+    0x1, 0x2, 0x64, 0xa,
+    0x0, 0x0, 0x0, 0x1,
+    0xc6, 0x0
+]
+
 MESSAGES = [
     EMPTY_MSG,
     REPLAY_MSG1,
@@ -119,6 +140,8 @@ MESSAGES = [
     REPLAY_MSG4,
     REPLAY_MSG5,
     TEST_MSG,
+    CHECKSUM_OVERFLOW_TEST_MSG,
+    CHECKSUM_UNDERFLOW_TEST_MSG,
 ]
 
 
@@ -131,13 +154,20 @@ def calculate_checksum(msg_data):
         raise Exception("calculate_checksum: Invalid data length {}"
                         .format(len(msg_data)))
 
+    overflow = 0x01
     checksum = 0
     for i in msg_data:
         checksum += i
     checksum -= 0xff
+
+    if checksum > 0xff:
+        overflow = 0x02
+    elif checksum < 0:
+        overflow = 0x00
+
     checksum &= 0xff
 
-    return checksum
+    return (checksum, overflow)
 
 
 def verify_checksum(args):
@@ -145,11 +175,13 @@ def verify_checksum(args):
 
     msg = MESSAGES[args.msg]
 
-    bmw_checksum = calculate_checksum(msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
+    (checksum, overflow) = calculate_checksum(
+            msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
 
-    print("bmw checksum: {}".format(hex(bmw_checksum)))
+    print("checksum: {}, {}".format(hex(checksum), hex(overflow)))
 
-    print("message[25]: {}".format(hex(msg[24])))
+    print("message[24]: {}, message[25]: {}".format(
+        hex(msg[24]), hex(msg[25])))
 
 
 def generate_msg(args):
@@ -228,8 +260,10 @@ def generate_msg(args):
     if args.traffic_delay is not None:
         msg[TRAFFIC_DELAY_OFFSET] = args.traffic_delay
 
-    msg[CHECKSUM_OFFSET] = calculate_checksum(
+    (checksum, overflow) = calculate_checksum(
             msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
+    msg[CHECKSUM_OFFSET] = checksum
+    msg[CHECKSUM_OVERFLOW_OFFSET] = overflow
 
     print("generated message: {}".format(msg_to_string(msg)))
 

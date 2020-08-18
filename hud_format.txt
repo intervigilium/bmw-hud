@@ -201,10 +201,6 @@ There is some interplay between dist_remaining 0/1/2, some values are not
 valid unless other 0/1/2 is set, if multiple are set, total is additive.
 0/1/2 must be a ones/tens/hundreds kind of thing
 
-There may also be a checksum problem, certain combinations that should be
-valid result in error. Checksums starting with 0xc*, 0xd*, 0xf* seem to be
-invalid.
-
-Yes, checksum truncation error when checksum exceeds 0xff
-
 There is a checksum: (sum(msg[2:23]) - 0xff) & 0xff
+If checksum before truncation overflows, set offset 24 to 0x02
+If checksum before truncation underflows, set offset 24 to 0x00
