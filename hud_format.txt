@@ -86,14 +86,44 @@ arrival AM/PM
 
 dist_to_turn_0
 only shows when turn indicator active
-shows yards
-anything but 250 appears invalid
+52 => 60yd
+57 => 60yd
+58 => 60yd
+59 => 60yd
+60 => 70yd
+70 => 80yd
+80 => 90yd
+90 => 100yd
+100 => 100yd
+110 => 100yd
+120 => 150yd
+140 => 150yd
+150 => 150yd
+180 => 200yd
+200 => 200yd
+231 => 250yd
+250 => 250yd
+254 => 300yd
+255 => 300yd
 
 dist_to_turn_1
-0-100, shows yards
+1 => 300yd
+10 => 2800yd
+20 => 5600yd
+40 => 6mi
+50 => 8mi
+80 => 13mi
+100 => 16mi
+160 => 25mi
+200 => 32mi
+255 => 41mi
 
 dist_to_turn_2
-0-100, shows miles
+1 => 41mi
+100 => 4072mi
+130 => 5294mi
+139 => 5660mi, last visible value
+140-255 => not visible
 
 dist_remaining_0
 10 => 10yd
@@ -119,7 +149,7 @@ dist_remaining_0
 210 => 250yd
 220 => 250yd
 230 => 250yd
-231 => 250yd, also max value
+255 => 300yd, also max value
 
 dist_remaining_1
 1 => 300yd
@@ -145,10 +175,36 @@ dist_remaining_1
 200 => 32mi
 220 => 35mi
 230 => 37mi
-231 => 37mi, also max value
+255 => 41mi, also max value
 
 dist_remaining_2
 shows miles
-0-100
+1 => 41mi
+2 => 81mi
+3 => 122mi
+4 => 163mi
+5 => 204mi
+10 => 407mi
+20 => 814mi
+25 => 1018mi
+50 => 2036mi
+75 => 3054mi
+100 => 4072mi
+122 => 4968mi
+123 => 5009mi
+128 => 5212mi
+130 => 5294mi
+139 => 5660mi, last visible value
+140-255 => not visible
+
+There is some interplay between dist_remaining 0/1/2, some values are not
+valid unless other 0/1/2 is set, if multiple are set, total is additive.
+0/1/2 must be a ones/tens/hundreds kind of thing
+
+There may also be a checksum problem, certain combinations that should be
+valid result in error. Checksums starting with 0xc*, 0xd*, 0xf* seem to be
+invalid.
+
+Yes, checksum truncation error when checksum exceeds 0xff
 
 There is a checksum: (sum(msg[2:23]) - 0xff) & 0xff
