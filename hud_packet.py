@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
+import math
 import socket
 
 
 HUD = ("192.168.10.1", 50007)
+
+YARDS_PER_MILE = 1760
 
 DATA_BEGIN_OFFSET = 0x2
 UNK_OFFSET_2 = 0x02
@@ -184,6 +187,66 @@ def verify_checksum(args):
         hex(msg[24]), hex(msg[25])))
 
 
+def convert_yards(yards):
+    if yards < 15:
+        return 10
+    elif yards < 25:
+        return 20
+    elif yards < 35:
+        return 30
+    elif yards < 45:
+        return 40
+    elif yards < 55:
+        return 50
+    elif yards < 65:
+        # 55 makes it display 60 for some reason
+        return 55;
+    elif yards < 75:
+        # 60 makes it display 70 for some reason
+        return 60
+    elif yards < 85:
+        # 70 makes it display 80 for some reason
+        return 70
+    elif yards < 95:
+        # 80 makes it display 90 for some reason
+        return 80
+    elif yards < 150:
+        return 100
+    elif yards < 200:
+        return 150
+    elif yards < 250:
+        return 200
+    elif yards < 300:
+        return 230
+    else:
+        return 255
+
+
+def calculate_distance(miles):
+    offset_2 = 0
+    offset_1 = 0
+    offset_0 = 0
+
+    if miles > 41.0:
+        scaling = (5660.0 - 41.0) / (139 - 1)
+        offset_2 = math.floor(miles / scaling)
+        remainder = (miles / scaling) - math.floor(miles / scaling)
+        miles = remainder * scaling
+
+    if miles > 0.17:
+        scaling = (41.0 - (300.0 / YARDS_PER_MILE)) / (255 - 1)
+        offset_1 = math.floor(miles / scaling)
+        remainder = (miles / scaling) - math.floor(miles / scaling)
+        miles = remainder * scaling
+
+    if miles > 0.0:
+        yards = miles * YARDS_PER_MILE
+        offset_0 = convert_yards(yards)
+
+
+    return (offset_2, offset_1, offset_0)
+
+
 def generate_msg(args):
     print("generating message")
 
@@ -224,6 +287,13 @@ def generate_msg(args):
     if args.dist_to_turn_disable is not None:
         msg[DIST_TO_TURN_DISABLE_OFFSET] = args.dist_to_turn_disable
 
+    if args.distance_to_turn is not None:
+        (offset_2, offset_1, offset_0) = calculate_distance(
+                args.distance_to_turn)
+        msg[DIST_TO_TURN_2_OFFSET] = offset_2
+        msg[DIST_TO_TURN_1_OFFSET] = offset_1
+        msg[DIST_TO_TURN_0_OFFSET] = offset_0
+
     if args.arrow is not None:
         msg[ARROW_OFFSET] = args.arrow
 
@@ -256,6 +326,13 @@ def generate_msg(args):
 
     if args.remaining_dist_disable is not None:
         msg[REMAINING_DIST_DISABLE_OFFSET] = args.remaining_dist_disable
+
+    if args.remaining_distance is not None:
+        (offset_2, offset_1, offset_0) = calculate_distance(
+                args.remaining_distance)
+        msg[REMAINING_DIST_2_OFFSET] = offset_2
+        msg[REMAINING_DIST_1_OFFSET] = offset_1
+        msg[REMAINING_DIST_0_OFFSET] = offset_0
 
     if args.traffic_delay is not None:
         msg[TRAFFIC_DELAY_OFFSET] = args.traffic_delay
@@ -325,6 +402,9 @@ def parse_args():
     parser.add_argument("--dist_to_turn_disable",
                         type=int,
                         help="disable distance to turn indicator")
+    parser.add_argument("--distance_to_turn",
+                        type=float,
+                        help="distance to turn in miles")
 
     parser.add_argument("--arrow",
                         type=int,
@@ -362,6 +442,9 @@ def parse_args():
     parser.add_argument("--remaining_dist_disable",
                         type=int,
                         help="disable remaining distance indicator")
+    parser.add_argument("--remaining_distance",
+                        type=float,
+                        help="remaining distance in miles")
 
     parser.add_argument("--traffic_delay",
                         type=int,
