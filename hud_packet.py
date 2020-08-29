@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import contextlib
 import math
 import socket
 
@@ -361,20 +362,19 @@ def generate_msg(args):
 
 
 def send_msg(msg):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        print("connecting to HUD")
+        s.connect(HUD)
 
-    print("connecting to HUD")
-    s.connect(HUD)
+        raw_msg = bytearray(msg)
+        print("sending message: {}".format(msg_to_string(msg)))
+        s.sendall(raw_msg)
 
-    raw_msg = bytearray(msg)
-    print("sending message: {}".format(msg_to_string(msg)))
-    s.sendall(raw_msg)
+        print("receiving response")
+        data = s.recv(1024)
 
-    print("receiving response")
-    data = s.recv(1024)
-
-    print("received {}".format(data))
-    # TODO: Check against server ACK message
+        print("received {}".format(data))
+        # TODO: Check against server ACK message
 
 
 def parse_args():
