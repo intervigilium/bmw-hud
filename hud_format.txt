@@ -53,6 +53,16 @@ HUS message ACK format:
 byte 00: 0x7b ?
 byte 01: 0x10 ?
 
+Nav hello message format:
+6 bytes
+
+byte 00: 0x7a header byte?
+byte 01: 0x01 header byte?
+byte 02: 0x01 ?
+byte 03: 0x0c ?
+byte 04: 0x22 checksum ?
+byte 05: 0x01 checksum ?
+
 Nav message format:
 
 These messages go to port 50007
