@@ -200,7 +200,7 @@ def convert_yards(yards):
         return 50
     elif yards < 65:
         # 55 makes it display 60 for some reason
-        return 55;
+        return 55
     elif yards < 75:
         # 60 makes it display 70 for some reason
         return 60
@@ -242,7 +242,6 @@ def calculate_distance(miles):
     if miles > 0.0:
         yards = miles * YARDS_PER_MILE
         offset_0 = convert_yards(yards)
-
 
     return (offset_2, offset_1, offset_0)
 
