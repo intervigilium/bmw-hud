@@ -31,9 +31,11 @@ REMAINING_DIST_1_OFFSET = 0x13
 REMAINING_DIST_2_OFFSET = 0x14
 REMAINING_DIST_DISABLE_OFFSET = 0x15
 TRAFFIC_DELAY_OFFSET = 0x16
-DATA_END_OFFSET = 0x17
+NAV_MSG_DATA_END_OFFSET = 0x17
 CHECKSUM_OFFSET = 0x18
 CHECKSUM_OVERFLOW_OFFSET = 0x19
+
+CONTROL_MSG_DATA_END_OFFSET = 0x08
 
 HELLO_MSG = [
     0x7a, 0x01, 0x01, 0x15,
@@ -135,6 +137,12 @@ CHECKSUM_UNDERFLOW_TEST_MSG = [
     0xc6, 0x0
 ]
 
+PARAMETER_CONTROL_MSG1 = [
+    0x7b, 0x03, 0x0d, 0x64,
+    0x00, 0x02, 0x01, 0x01,
+    0x01, 0x76, 0x00
+]
+
 MESSAGES = [
     EMPTY_MSG,
     REPLAY_MSG1,
@@ -145,6 +153,7 @@ MESSAGES = [
     TEST_MSG,
     CHECKSUM_OVERFLOW_TEST_MSG,
     CHECKSUM_UNDERFLOW_TEST_MSG,
+    PARAMETER_CONTROL_MSG1,
 ]
 
 
@@ -153,7 +162,7 @@ def msg_to_string(msg):
 
 
 def calculate_checksum(msg_data):
-    if len(msg_data) != 21:
+    if len(msg_data) != 21 and len(msg_data) != 6:
         raise Exception("calculate_checksum: Invalid data length {}"
                         .format(len(msg_data)))
 
@@ -178,13 +187,18 @@ def verify_checksum(args):
 
     msg = MESSAGES[args.msg]
 
+    is_control_msg = len(msg) == 11
+
+    end_offset = (CONTROL_MSG_DATA_END_OFFSET
+                  if is_control_msg else NAV_MSG_DATA_END_OFFSET)
+
     (checksum, overflow) = calculate_checksum(
-            msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
+            msg[DATA_BEGIN_OFFSET:end_offset])
 
     print("checksum: {}, {}".format(hex(checksum), hex(overflow)))
 
-    print("message[24]: {}, message[25]: {}".format(
-        hex(msg[24]), hex(msg[25])))
+    print("message[-2]: {}, message[-1]: {}".format(
+        hex(msg[-2]), hex(msg[-1])))
 
 
 def convert_yards(yards):
@@ -337,7 +351,7 @@ def generate_msg(args):
         msg[TRAFFIC_DELAY_OFFSET] = args.traffic_delay
 
     (checksum, overflow) = calculate_checksum(
-            msg[DATA_BEGIN_OFFSET:DATA_END_OFFSET])
+            msg[DATA_BEGIN_OFFSET:NAV_MSG_DATA_END_OFFSET])
     msg[CHECKSUM_OFFSET] = checksum
     msg[CHECKSUM_OVERFLOW_OFFSET] = overflow
 

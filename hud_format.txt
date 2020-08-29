@@ -261,3 +261,11 @@ valid unless other 0/1/2 is set, if multiple are set, total is additive.
 There is a checksum: (sum(msg[2:23]) - 0xff) & 0xff
 If checksum before truncation overflows, set offset 24 to 0x02
 If checksum before truncation underflows, set offset 24 to 0x00
+
+ACK message
+5 bytes
+byte 00: 0x7c
+byte 01: 0x04
+byte 02: 0x01
+byte 03: 0x00
+byte 04: 0x00
