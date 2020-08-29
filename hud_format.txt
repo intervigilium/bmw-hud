@@ -1,4 +1,61 @@
-message format:
+HUS app message format:
+
+These messages go to port 50008
+
+Query current control parameters
+5 bytes
+
+byte 00: 0x7b header byte?
+byte 01: 0x01 header byte?
+byte 02: 0x02 ??
+byte 03: 0x03 ??
+byte 04: 0x05 ??
+
+Parameter query response
+116 bytes
+byte 00: 0x7b header byte?
+byte 01: 0x02 header byte?
+byte 02: 0x0d current speed adjustment, 0x0: -10%, 0xa: 0%, 0xd: +3%, 0xf: ?
+byte 03: 0x64 current brightness
+byte 04: 0x01 current auto-brightness, off: 0 on: 1
+byte 05: 0x02 current auto/kmh/mph
+byte 06: 0x01 current height above sea level
+byte 08: 0x01 current nm/kW display
+byte 09: 0x01 current cruise control display
+byte 0a: 0x48 first character of WLAN network name
+...
+byte 5f: 0x03 current security type?
+byte 60: 0x31 first character of WLAN password
+...
+byte a0: 0x01
+byte a1: 0x03
+byte a2: 0x1c
+
+Parameter control message
+11 bytes
+
+byte 00: 0x7b header byte?
+byte 01: 0x03 header byte?
+byte 02: 0x0d brightness command?
+byte 03: 0x64 brightness value?
+byte 04: 0x00 0: auto-brightness off, 1: on
+byte 05: 0x02 0: auto, 1: kmh, 2: mph
+byte 06: 0x01 0: height above sea level off, 1: on
+byte 07: 0x01 0: nm/kW off, 1: nm/kW on
+byte 08: 0x01 checksum ?
+byte 09: 0x76 checksum ?
+byte 0a: 0x00 checksum ?
+
+HUS message ACK format:
+
+2 bytes
+
+byte 00: 0x7b ?
+byte 01: 0x10 ?
+
+Nav message format:
+
+These messages go to port 50007
 
 26 bytes
 
